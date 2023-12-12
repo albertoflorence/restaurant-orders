@@ -34,18 +34,12 @@ class MenuBuilder:
         )
         return self._format_menu_data(menu)
 
-    def _dish_has_ingredients(self, dish) -> bool:
-        for ingredient in dish.recipe:
-            if (
-                self.inventory.inventory.get(ingredient, 0)
-                < dish.recipe[ingredient]
-            ):
-                return False
-
-        return True
-
     def _filter_dishes_with_ingredients(self, dishes) -> set:
-        return {dish for dish in dishes if self._dish_has_ingredients(dish)}
+        return {
+            dish
+            for dish in dishes
+            if self.inventory.check_recipe_availability(dish.recipe)
+        }
 
     def _menu_restrictions(self, dishes, restriction) -> set:
         return {
